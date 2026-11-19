@@ -2,7 +2,7 @@
 #
 # One workflow per lab, scoped to that lab's folder, so finishing lab 3 never re-runs
 # lab 1 and lab 1's checks keep passing once its folder is frozen.
-name: lab-01
+name: custom-lab-01
 
 on:
   push:
