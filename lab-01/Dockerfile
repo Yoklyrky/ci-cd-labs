@@ -15,4 +15,4 @@ RUN mkdir /data && touch /data/visits.txt && chown appuser:nogroup /data/visits.
 USER appuser
 COPY --chown=appuser:nogroup app.py ./
 EXPOSE 8080
-ENTRYPOINT ["python", "app.py"]
+CMD ["python", "app.py"]
