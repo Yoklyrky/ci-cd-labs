@@ -11,7 +11,8 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN adduser -S -u 10001 -h /app appuser
+RUN mkdir /data && touch /data/visits.txt && chown appuser:nogroup /data/visits.txt
 USER appuser
-COPY --chown=appuser:appuser app.py ./
+COPY --chown=appuser:nogroup app.py ./
 EXPOSE 8080
 ENTRYPOINT ["python", "app.py"]
