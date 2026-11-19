@@ -2,11 +2,12 @@ services:
   db:
     image: postgres@sha256:123b17998ccaf47e53b502e8c6a1e79afd8f579c6f3eec83c563da026f957395
     container_name: db
+    env_file: .env
     restart: always
     environment:
       POSTGRES_DB: lab-01
       POSTGRES_USER: db-user
-      POSTGRES_PASSWORD: db-password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_data:/var/lib/postgresql
 
