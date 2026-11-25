@@ -1,0 +1,39 @@
+name: public-lab-02
+
+on:
+  push:
+    branch: ["lab-02"]
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: 
+          python-version: 3.13
+          cache: "pip"
+      - run: |
+        python3 -m venv .venv
+        PATH="${pwd}/.venv/bin:$PATH"
+        pip install -r requirements-dev.txt requirements.txt
+      - run: |
+        python app.py
+  build:
+    needs: tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v3
+      - id: prep
+        run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "lower_owner=$lower_owner" >> $GITHUB_OUTPUT
+      - uses: docker/build-push-action@v6
+        with:
+          context: "lab-02/"
+          file: "lab-02/Dockerfile"
+          tags: "ghcr.io/${{ steps.prep.outputs.lower_owner }}/lab-02:${{ github.sha }}"
+          labels: "org.opencontainers.image.revision=${{ github.sha }}"
+
+

@@ -1,0 +1,32 @@
+name: Practice Docker Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-n-push:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Setup Buildx8.8
+        uses: docker/setup-buildx-action@v3
+      - name: Lowercase Owner
+        id: prep
+        run: |
+          lower_owner=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]') 
+          echo "lower_owner=$lower_owner" >> "$GITHUB_OUTPUT"
+      - name: Docker build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: "app/"
+          file: "app/Dockerfile"
+          push: "false"
+          load: "true"
+          tags: "ghcr.io/${{ steps.prep.outputs.lower_owner }}/practice-app:${{ github.sha }}"
+          labels: "org.opencontainers.image.revision=${{ github.sha }}"
+      - name: Checks
+        run: |
+            docker run --rm ghcr.io/${{ steps.prep.outputs.lower_owner }}/practice-app:${{ github.sha }}
+            docker image inspect ghcr.io/${{ steps.prep.outputs.lower_owner }}/practice-app:${{ github.sha }} --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}'
