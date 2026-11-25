@@ -1,7 +1,9 @@
 import pytest
 import requests
+from app import app
 
 def test_ready():
-    response = requests.get("http://localhost:8080/ready")
+    client = app.test_client()
+    response = client.get("/ready")
     assert response.status_code == 200
-    assert response.json()["ready"] == True
+    assert response.get_json()["ready"] == True

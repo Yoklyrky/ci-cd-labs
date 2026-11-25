@@ -1,7 +1,9 @@
 import pytest
 import requests
+from app import app
 
 def test_health():
-    response = requests.get("http://localhost:8080/health")
+    client = app.test_client()
+    response = client.get("/health")
     assert response.status_code == 200
     assert response.text == "ok\n"
