@@ -1,9 +1,11 @@
 import pytest
 import requests
-import os
+import app as app_module
 from app import app
+file = "visits.txt"
 
-def test_visits():
+def test_visits(monkeypatch, tmp_path):
+    monkeypatch.setattr(app_module, "COUNTER_FILE", tmp_path / file)
     client = app.test_client()
     response_1 = client.get("/visits")
     response_2 = client.get("/visits")
